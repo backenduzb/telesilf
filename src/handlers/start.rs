@@ -1,9 +1,7 @@
 use teloxide::{prelude::*, utils::command::BotCommands};
 
 #[derive(BotCommands, Clone)]
-#[command(rename_rule = "lowercase", description = "Mavjud buyruqlar:")]
 pub enum Command {
-    #[command(description = "Silf botni ishga tushirish")]
     Start,
 }
 
