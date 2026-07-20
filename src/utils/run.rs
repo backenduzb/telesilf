@@ -19,7 +19,8 @@ pub async fn run_webhook(bot: Bot, config: Config) {
     let url = url_str.parse().expect("WEBHOOK_URL formati noto'g'ri");
     
     let port_num: u16 = config.port.parse().unwrap_or(8080);
-    let address = ([127, 0, 0, 1], port_num).into();
+    println!("PORT = {}", config.port);
+    let address = ([0, 0, 0, 0], port_num).into();
     
     let listener = teloxide::update_listeners::webhooks::axum(
         bot.clone(),
