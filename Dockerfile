@@ -1,4 +1,4 @@
-FROM rust:stable AS builder
+FROM rust:1.90-slim AS builder
 WORKDIR /silf
 
 RUN apt-get update && \
