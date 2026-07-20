@@ -12,7 +12,6 @@ WORKDIR /silf
 RUN apt-get update && apt-get install -y libssl3 ca-certificates && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /silf/target/release/main /silf/silf
-COPY .env /silf/.env
 
 EXPOSE 8000
 
