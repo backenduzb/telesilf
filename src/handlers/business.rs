@@ -38,7 +38,7 @@ pub async fn test(bot: Bot, msg: Message) -> Result<(), RequestError> {
 	                    &bot,
 	                    msg.chat.id,
 	                    sent.id,
-	                    format!("Assalomu alaykum {}! Javohir o'tniga hozir men javobberib turubman marhamat nima kerak bo'lsa so'rashingiz mumkin.", name),
+	                    format!("Assalomu alaykum {}! Javohir o'rniga hozir men javobberib turubman marhamat nima kerak bo'lsa so'rashingiz mumkin.", name),
 	                    Some(biz_id.0.as_str()),
 	                )
 	                .await?;
