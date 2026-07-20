@@ -1,17 +1,24 @@
-use teloxide::{prelude::*, utils::command::BotCommands};
+use teloxide::prelude::*;
+use teloxide::utils::command::BotCommands;
 
 #[derive(BotCommands, Clone)]
+#[command(rename_rule = "lowercase", description = "list")]
 pub enum Command {
+    #[command(description = "start")]
     Start,
 }
 
 pub async fn start(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
     match cmd {
         Command::Start => {
-            bot.send_message(
-                msg.chat.id, 
-                "Salom! Men Silf AI botman. Sizga qanday yordam bera olaman?"
-            ).await?;
+            let name = msg
+                .from
+                .as_ref()
+                .map(|u| u.first_name.clone())
+                .unwrap_or_else(|| "Foydalanuvchi".to_string());
+
+            bot.send_message(msg.chat.id, format!("Assalomu alaykum, {name}!"))
+                .await?;
         }
     }
     Ok(())
