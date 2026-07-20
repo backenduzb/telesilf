@@ -17,10 +17,15 @@ pub async fn send_business_reply(
 }
 
 pub async fn test(bot: Bot, msg: Message) -> Result<(), RequestError> {
-    if let MessageKind::Common(ref common) = msg.kind {
+	if let MessageKind::Common(ref common) = msg.kind {
         if let Some(biz_id) = &common.business_connection_id {
 
             if let Some(text) = msg.text() {
+            	if let Some(user) = &msg.from {
+                    if user.id == UserId(6400925437) {
+                            return Ok(()); 
+                        }
+                }
             	let name = msg
                         .from
                         .as_ref()

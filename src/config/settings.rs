@@ -6,6 +6,7 @@ pub struct Config {
     pub debug: bool,
     pub webhook_url: Option<String>,
     pub port: String, 
+    pub admin: String,
 }
 
 impl Config {
@@ -20,6 +21,7 @@ impl Config {
             debug,
             webhook_url: env::var("WEBHOOK_URL").ok(),
             port: env::var("PORT").unwrap_or_else(|_| "8080".to_string()), 
+            admin: env::var("admin").unwrap_or_else(|_| "6400925437".to_string()), 
         }
     }
 }
