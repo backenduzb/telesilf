@@ -16,7 +16,7 @@ impl Config {
             .unwrap_or(false);
 
         Self {
-            bot_token: env::var("TELOXIDE_TOKEN").expect("TELOXIDE_TOKEN topilmadi!"),
+            bot_token: env::var("BOT_TOKEN").expect("BOT_TOKEN topilmadi!"),
             debug,
             webhook_url: env::var("WEBHOOK_URL").ok(),
             port: env::var("PORT").unwrap_or_else(|_| "8080".to_string()), 
