@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use teloxide::prelude::*;
 use teloxide::types::{BusinessMessagesDeleted, ChatId};
-
+use teloxide::types::ParseMode;
 use crate::app::AppState;
 
 fn format_deleted_business_message(snapshot: &crate::states::business::BusinessMessageSnapshot) -> String {
@@ -22,7 +22,7 @@ fn format_deleted_business_message(snapshot: &crate::states::business::BusinessM
     );
 
     if let Some(content) = snapshot.text.as_deref() {
-        text.push_str("\nXabar:<i>");
+        text.push_str("\n\n	<i>");
         text.push_str(content);
         text.push_str("</i>");
         
@@ -51,7 +51,7 @@ pub async fn deleted_business_messages(
         return Ok(());
     }
 
-    bot.send_message(ChatId(6400925437), lines.join("\n\n---\n\n"))
+    bot.send_message(ChatId(6400925437), lines.join("\n\n---\n\n")).parse_mode(ParseMode::Html)
         .await?;
 
     Ok(())
