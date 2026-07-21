@@ -1,6 +1,7 @@
+use crate::app::AppState;
+use crate::handlers::business::connection::save_business_connection_from_message;
 use teloxide::prelude::*;
 use teloxide::utils::command::BotCommands;
-
 #[derive(BotCommands, Clone)]
 #[command(rename_rule = "lowercase", description = "list")]
 pub enum Command {
@@ -8,9 +9,15 @@ pub enum Command {
     Start,
 }
 
-pub async fn start(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
+pub async fn start(
+    bot: Bot,
+    msg: Message,
+    cmd: Command,
+    app: std::sync::Arc<AppState>,
+) -> ResponseResult<()> {
     match cmd {
         Command::Start => {
+            save_business_connection_from_message(&bot, &msg, &app).await?;
             let name = msg
                 .from
                 .as_ref()
