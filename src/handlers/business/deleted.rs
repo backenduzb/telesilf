@@ -51,7 +51,7 @@ pub async fn deleted_business_messages(
         return Ok(());
     }
 
-    bot.send_message(6400925437, lines.join("\n\n---\n\n"))
+    bot.send_message(ChatId(6400925437), lines.join("\n\n---\n\n"))
         .await?;
 
     Ok(())
