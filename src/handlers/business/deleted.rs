@@ -1,11 +1,13 @@
 use std::sync::Arc;
 
-use teloxide::prelude::*;
-use teloxide::types::{BusinessMessagesDeleted, ChatId};
-use teloxide::types::ParseMode;
 use crate::app::AppState;
+use teloxide::prelude::*;
+use teloxide::types::ParseMode;
+use teloxide::types::{BusinessMessagesDeleted, ChatId};
 
-fn format_deleted_business_message(snapshot: &crate::states::business::BusinessMessageSnapshot) -> String {
+fn format_deleted_business_message(
+    snapshot: &crate::states::business::BusinessMessageSnapshot,
+) -> String {
     let username = snapshot
         .username
         .as_deref()
@@ -25,7 +27,6 @@ fn format_deleted_business_message(snapshot: &crate::states::business::BusinessM
         text.push_str("\n\n	<i>");
         text.push_str(content);
         text.push_str("</i>");
-        
     }
 
     text
@@ -51,7 +52,8 @@ pub async fn deleted_business_messages(
         return Ok(());
     }
 
-    bot.send_message(ChatId(6400925437), lines.join("\n\n---\n\n")).parse_mode(ParseMode::Html)
+    bot.send_message(ChatId(6400925437), lines.join("\n\n---\n\n"))
+        .parse_mode(ParseMode::Html)
         .await?;
 
     Ok(())

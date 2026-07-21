@@ -21,8 +21,7 @@ pub async fn handle_idle(
             bot,
             msg.chat.id,
             req.id,
-            "Marhamat storyni profilingizga yuklay olaman. Rasm yoki video yuboring."
-                .to_string(),
+            "Marhamat storyni profilingizga yuklay olaman. Rasm yoki video yuboring.".to_string(),
         )
         .await?;
     }

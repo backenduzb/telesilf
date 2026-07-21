@@ -1,7 +1,7 @@
 use dashmap::DashMap;
 use teloxide::types::{BusinessConnectionId, ChatId, MessageId, UserId};
 
-use super::business::{business_message_key, BusinessMessageSnapshot};
+use super::business::{BusinessMessageSnapshot, business_message_key};
 use super::session::Session;
 
 #[derive(Default)]
@@ -31,7 +31,8 @@ impl StateManager {
     }
 
     pub fn remember_business_message(&self, snapshot: BusinessMessageSnapshot) {
-        self.business_messages.insert(snapshot.cache_key(), snapshot);
+        self.business_messages
+            .insert(snapshot.cache_key(), snapshot);
     }
 
     pub fn take_business_message(

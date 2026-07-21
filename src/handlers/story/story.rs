@@ -1,3 +1,4 @@
+use crate::services::story::{post_story_multipart, prepare_story_content};
 use crate::states::{session::Session, state::State, story::StoryMedia};
 use crate::utils::message::stream_text;
 use teloxide::prelude::*;
@@ -97,27 +98,39 @@ pub async fn handle_waiting_story_confirm(
     match text.trim().to_lowercase().as_str() {
         "ha" => {
             let Some(business_connection_id) = session.business_connection_id.clone() else {
-                bot.send_message(msg.chat.id, "Uzur storyni uplaod qila olmayman bussines connection id ni topolmadim")
-                    .await?;
+                bot.send_message(
+                    msg.chat.id,
+                    "Uzur storyni uplaod qila olmayman bussines connection id ni topolmadim",
+                )
+                .await?;
 
                 return Ok(());
             };
 
-            let Some(content) = session.story.to_input_story_content() else {
+            let Some(media) = session.story.media.as_ref() else {
                 bot.send_message(msg.chat.id, "malumotlarini topolmadim")
                     .await?;
 
                 return Ok(());
             };
 
+            let prepared = prepare_story_content(bot, media).await?;
+
             let active_period = session.story.active_period();
 
-            bot.post_story(business_connection_id, content, active_period)
-                .await?;
+            post_story_multipart(
+                bot,
+                business_connection_id,
+                &prepared,
+                active_period,
+                session.story.caption.as_deref(),
+            )
+            .await?;
 
             session.reset_story();
 
-            bot.send_message(msg.chat.id, "Yuklab qo'ydim tekshirishingiz mumkin.").await?;
+            bot.send_message(msg.chat.id, "Yuklab qo'ydim tekshirishingiz mumkin.")
+                .await?;
         }
 
         "yo'q" => {
@@ -127,8 +140,7 @@ pub async fn handle_waiting_story_confirm(
         }
 
         _ => {
-            bot.send_message(msg.chat.id, "ha yoki yo'q?")
-                .await?;
+            bot.send_message(msg.chat.id, "ha yoki yo'q?").await?;
         }
     }
 

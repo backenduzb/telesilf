@@ -3,10 +3,10 @@ use crate::handlers::business::connection::{
     remember_business_message_from_message, save_business_connection_from_message,
 };
 use crate::utils::message::stream_bs_text;
-use teloxide::prelude::*;
-use teloxide::RequestError;
-use teloxide::types::{MessageKind, UserId};
 use std::sync::Arc;
+use teloxide::RequestError;
+use teloxide::prelude::*;
+use teloxide::types::{MessageKind, UserId};
 
 pub async fn business_start(
     bot: Bot,
