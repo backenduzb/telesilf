@@ -1,7 +1,9 @@
 use crate::handlers::{
     story::idle::handle_idle,
     story::story::{
-        handle_waiting_story_caption, handle_waiting_story_confirm, handle_waiting_story_media,
+        handle_waiting_story_action, handle_waiting_story_caption,
+        handle_waiting_story_caption_decision, handle_waiting_story_confirm,
+        handle_waiting_story_media,
     },
 };
 use crate::{app::AppState, states::state::State};
@@ -22,6 +24,14 @@ pub async fn message_handler(bot: Bot, msg: Message, app: Arc<AppState>) -> Resp
 
         State::WaitingStoryMedia => {
             handle_waiting_story_media(&bot, &msg, &mut session).await?;
+        }
+
+        State::WaitingStoryAction => {
+            handle_waiting_story_action(&bot, &msg, &mut session).await?;
+        }
+
+        State::WaitingStoryCaptionDecision => {
+            handle_waiting_story_caption_decision(&bot, &msg, &mut session).await?;
         }
 
         State::WaitingStoryCaption => {

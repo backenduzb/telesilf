@@ -33,7 +33,7 @@ async fn stream_text_inner(
         req.await?;
 
         if index + 1 != words.len() {
-            sleep(Duration::from_millis(25)).await;
+            sleep(Duration::from_millis(300)).await;
         }
     }
 

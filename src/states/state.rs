@@ -4,6 +4,8 @@ pub enum State {
     Idle,
 
     WaitingStoryMedia,
+    WaitingStoryAction,
+    WaitingStoryCaptionDecision,
     WaitingStoryCaption,
     WaitingStoryConfirm,
 }

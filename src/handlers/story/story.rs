@@ -10,42 +10,108 @@ pub async fn handle_waiting_story_media(
 ) -> Result<(), teloxide::RequestError> {
     if let Some(photo) = msg.photo() {
         session.story.media = Some(StoryMedia::Photo(photo.last().unwrap().file.id.clone()));
-
-        session.state = State::WaitingStoryCaption;
-
-        let req = bot.send_message(msg.chat.id, "...").await?;
-
-        stream_text(bot, msg.chat.id, req.id, "📝 Caption yuboring.".to_string()).await?;
-
-        return Ok(());
-    }
-
-    if let Some(video) = msg.video() {
+    } else if let Some(video) = msg.video() {
         session.story.media = Some(StoryMedia::Video(video.file.id.clone()));
-
-        session.state = State::WaitingStoryCaption;
-
+    } else {
         let req = bot.send_message(msg.chat.id, "...").await?;
 
         stream_text(
             bot,
             msg.chat.id,
             req.id,
-            "Caption yani izohni yuborishingiz mumkin marhamat".to_string(),
+            "Iltimos rasm yoki video yuboring.".to_string(),
         )
         .await?;
 
         return Ok(());
     }
+
+    session.story.caption = msg.caption().map(ToOwned::to_owned);
+    session.state = State::WaitingStoryAction;
+
     let req = bot.send_message(msg.chat.id, "...").await?;
 
     stream_text(
         bot,
         msg.chat.id,
         req.id,
-        "Iltimos rasm yoki video yuboring.".to_string(),
+        "Bu rasm yoki videoni nima qilay? Storyga yuklaymi?".to_string(),
     )
     .await?;
+
+    Ok(())
+}
+
+pub async fn handle_waiting_story_action(
+    bot: &Bot,
+    msg: &Message,
+    session: &mut Session,
+) -> Result<(), teloxide::RequestError> {
+    let Some(text) = msg.text() else {
+        return Ok(());
+    };
+
+    match text.trim().to_lowercase().as_str() {
+        "ha" | "xa" | "story" | "storyga yukla" | "yukla" | "yuklayver" => {
+            if let Some(caption) = session.story.caption.as_deref() {
+                session.state = State::WaitingStoryCaptionDecision;
+                bot.send_message(
+                    msg.chat.id,
+                    format!(
+                        "{}\n\nShu captionni ishlataymi?",
+                        caption
+                    ),
+                )
+                .await?;
+            } else {
+                session.state = State::WaitingStoryCaption;
+                bot.send_message(msg.chat.id, "Caption yozib yuboring.")
+                    .await?;
+            }
+        }
+        "yo'q" | "yoq" | "yo‘q" | "bekor" | "bekor qil" => {
+            session.reset_story();
+            bot.send_message(msg.chat.id, "Mayli, bu media storyga yuklanmaydi.")
+                .await?;
+        }
+        _ => {
+            bot.send_message(
+                msg.chat.id,
+                "Uzur gapignizga tushuna olmadim 😅",
+            )
+            .await?;
+        }
+    }
+
+    Ok(())
+}
+
+pub async fn handle_waiting_story_caption_decision(
+    bot: &Bot,
+    msg: &Message,
+    session: &mut Session,
+) -> Result<(), teloxide::RequestError> {
+    let Some(text) = msg.text() else {
+        return Ok(());
+    };
+
+    match text.trim().to_lowercase().as_str() {
+        "ha" | "xa" | "olaver" | "ishlat" | "ishlataver" => {
+            session.state = State::WaitingStoryConfirm;
+            bot.send_message(msg.chat.id, "Shu caption bilan yuklayveraymi?")
+                .await?;
+        }
+        "yo'q" | "yoq" | "yo‘q" => {
+            session.story.caption = None;
+            session.state = State::WaitingStoryCaption;
+            bot.send_message(msg.chat.id, "Unaqada yangi caption yozibbering.")
+                .await?;
+        }
+        _ => {
+            bot.send_message(msg.chat.id, "Videoni tagidagi captionni ishlataveraymi?")
+                .await?;
+        }
+    }
 
     Ok(())
 }
@@ -98,11 +164,8 @@ pub async fn handle_waiting_story_confirm(
     match text.trim().to_lowercase().as_str() {
         "ha" => {
             let Some(business_connection_id) = session.business_connection_id.clone() else {
-                bot.send_message(
-                    msg.chat.id,
-                    "Uzur storyni uplaod qila olmayman bussines connection id ni topolmadim",
-                )
-                .await?;
+                bot.send_message(msg.chat.id, "Uzur storyni uplaod qila olmaymas ekanmanda")
+                    .await?;
 
                 return Ok(());
             };
@@ -129,8 +192,11 @@ pub async fn handle_waiting_story_confirm(
 
             session.reset_story();
 
-            bot.send_message(msg.chat.id, "Yuklab qo'ydim tekshirishingiz mumkin.")
-                .await?;
+            bot.send_message(
+                msg.chat.id,
+                "Storyni profilingizga yuklab qo'ydim ko'rishingiz mumkin.",
+            )
+            .await?;
         }
 
         "yo'q" => {
@@ -140,7 +206,8 @@ pub async fn handle_waiting_story_confirm(
         }
 
         _ => {
-            bot.send_message(msg.chat.id, "ha yoki yo'q?").await?;
+            bot.send_message(msg.chat.id, "Aniq bir qaroringizni ayting.")
+                .await?;
         }
     }
 
