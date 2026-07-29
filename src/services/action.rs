@@ -1,12 +1,12 @@
-use std::{future::Future, time::Duration}
+use std::{future::Future, time::Duration};
 use teloxide::{
-	prelude::*,
+	prelude::*,	
 	types::ChatAction,
 };
-use tokio_utill::sync::CancellationToken;
+use tokio_util::sync::CancellationToken;
 
 pub async fn with_chat_action<F, T>(
-	bot: Bot,
+	bot: &Bot,
 	chat_id: ChatId,
 	action: ChatAction,
 	future: F,

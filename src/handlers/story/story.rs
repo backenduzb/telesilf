@@ -1,7 +1,10 @@
+use crate::services::action::with_chat_action;
 use crate::services::story::{post_story_multipart, prepare_story_content};
 use crate::states::{session::Session, state::State, story::StoryMedia};
 use crate::utils::message::stream_text;
+use teloxide::dispatching::dialogue::GetChatId;
 use teloxide::prelude::*;
+use teloxide::types::ChatAction;
 
 pub async fn handle_waiting_story_media(
     bot: &Bot,
@@ -15,11 +18,16 @@ pub async fn handle_waiting_story_media(
     } else {
         let req = bot.send_message(msg.chat.id, "...").await?;
 
-        stream_text(
+        with_chat_action(
             bot,
             msg.chat.id,
-            req.id,
-            "Iltimos rasm yoki video yuboring.".to_string(),
+            ChatAction::Typing,
+            stream_text(
+                bot,
+                msg.chat.id,
+                req.id,
+                "Iltimos rasm yoki video yuboring.".to_string(),
+            ),
         )
         .await?;
 
@@ -31,11 +39,16 @@ pub async fn handle_waiting_story_media(
 
     let req = bot.send_message(msg.chat.id, "...").await?;
 
-    stream_text(
+    with_chat_action(
         bot,
         msg.chat.id,
-        req.id,
-        "Bu rasm yoki videoni nima qilay? Storyga yuklaymi?".to_string(),
+        ChatAction::Typing,
+        stream_text(
+            bot,
+            msg.chat.id,
+            req.id,
+            "Storyga shuni yuklash kerakmi? aniq?".to_string(),
+        ),
     )
     .await?;
 
@@ -55,29 +68,64 @@ pub async fn handle_waiting_story_action(
         "ha" | "xa" | "story" | "storyga yukla" | "yukla" | "yuklayver" => {
             if let Some(caption) = session.story.caption.as_deref() {
                 session.state = State::WaitingStoryCaptionDecision;
-                bot.send_message(
+                let req = bot.send_message(msg.chat.id, "...").await?;
+                with_chat_action(
+                    bot,
                     msg.chat.id,
-                    format!(
-                        "{}\n\nShu captionni ishlataymi?",
-                        caption
+                    ChatAction::Typing,
+                    stream_text(
+                        bot,
+                        msg.chat.id,
+                        req.id,
+                        format!("{}\n\nShu captionni ishlataymi?", caption),
                     ),
                 )
                 .await?;
             } else {
                 session.state = State::WaitingStoryCaption;
-                bot.send_message(msg.chat.id, "Caption yozib yuboring.")
-                    .await?;
+                let req = bot.send_message(msg.chat.id, "...").await?;
+                with_chat_action(
+                    bot,
+                    msg.chat.id,
+                    ChatAction::Typing,
+                    stream_text(
+                        bot,
+                        msg.chat.id,
+                        req.id,
+                        "Caption yozib yuboring".to_string(),
+                    ),
+                )
+                .await?;
             }
         }
         "yo'q" | "yoq" | "yo‘q" | "bekor" | "bekor qil" => {
             session.reset_story();
-            bot.send_message(msg.chat.id, "Mayli, bu media storyga yuklanmaydi.")
-                .await?;
+            let req = bot.send_message(msg.chat.id, "...").await?;
+            with_chat_action(
+                bot,
+                msg.chat.id,
+                ChatAction::Typing,
+                stream_text(
+                    bot,
+                    msg.chat.id,
+                    req.id,
+                    "Mayli ignore qildim 😑".to_string(),
+                ),
+            )
+            .await?;
         }
         _ => {
-            bot.send_message(
+            let req = bot.send_message(msg.chat.id, "...").await?;
+            with_chat_action(
+                bot,
                 msg.chat.id,
-                "Uzur gapignizga tushuna olmadim 😅",
+                ChatAction::Typing,
+                stream_text(
+                    bot,
+                    msg.chat.id,
+                    req.id,
+                    "Uzur tushuna olamadim, NIMA?".to_string(),
+                ),
             )
             .await?;
         }
@@ -98,18 +146,51 @@ pub async fn handle_waiting_story_caption_decision(
     match text.trim().to_lowercase().as_str() {
         "ha" | "xa" | "olaver" | "ishlat" | "ishlataver" => {
             session.state = State::WaitingStoryConfirm;
-            bot.send_message(msg.chat.id, "Shu caption bilan yuklayveraymi?")
-                .await?;
+            let req = bot.send_message(msg.chat.id, "...").await?;
+            with_chat_action(
+                bot,
+                msg.chat.id,
+                ChatAction::Typing,
+                stream_text(
+                    bot,
+                    msg.chat.id,
+                    req.id,
+                    "Shu captionni olaveraymi?".to_string(),
+                ),
+            )
+            .await?;
         }
         "yo'q" | "yoq" | "yo‘q" => {
             session.story.caption = None;
             session.state = State::WaitingStoryCaption;
-            bot.send_message(msg.chat.id, "Unaqada yangi caption yozibbering.")
-                .await?;
+            let req = bot.send_message(msg.chat.id, "...").await?;
+            with_chat_action(
+                bot,
+                msg.chat.id,
+                ChatAction::Typing,
+                stream_text(
+                    bot,
+                    msg.chat.id,
+                    req.id,
+                    "Unaqada yangi caption yozibberingda".to_string(),
+                ),
+            )
+            .await?;
         }
         _ => {
-            bot.send_message(msg.chat.id, "Videoni tagidagi captionni ishlataveraymi?")
-                .await?;
+            let req = bot.send_message(msg.chat.id, "...").await?;
+            with_chat_action(
+                bot,
+                msg.chat.id,
+                ChatAction::Typing,
+                stream_text(
+                    bot,
+                    msg.chat.id,
+                    req.id,
+                    "Videoni captioni bor ekan o'shani ishlataveraymi?".to_string(),
+                ),
+            )
+            .await?;
         }
     }
 
@@ -123,12 +204,16 @@ pub async fn handle_waiting_story_caption(
 ) -> Result<(), teloxide::RequestError> {
     let Some(text) = msg.text() else {
         let req = bot.send_message(msg.chat.id, "...").await?;
-
-        stream_text(
+        with_chat_action(
             bot,
             msg.chat.id,
-            req.id,
-            "Descriptionda faqat matn bo'ladiku matn yuboring.".to_string(),
+            ChatAction::Typing,
+            stream_text(
+                bot,
+                msg.chat.id,
+                req.id,
+                "Descriptionda faqat matn bo'ladiku matn yuboring.".to_string(),
+            ),
         )
         .await?;
 
@@ -141,11 +226,16 @@ pub async fn handle_waiting_story_caption(
 
     let req = bot.send_message(msg.chat.id, "...").await?;
 
-    stream_text(
+    with_chat_action(
         bot,
         msg.chat.id,
-        req.id,
-        "Yuklayveraymiz tekshirdingizmi? hammasini?".to_string(),
+        ChatAction::Typing,
+        stream_text(
+            bot,
+            msg.chat.id,
+            req.id,
+            "Hammas tayyor endi yuklayveraymi?".to_string(),
+        ),
     )
     .await?;
 
@@ -164,15 +254,39 @@ pub async fn handle_waiting_story_confirm(
     match text.trim().to_lowercase().as_str() {
         "ha" => {
             let Some(business_connection_id) = session.business_connection_id.clone() else {
-                bot.send_message(msg.chat.id, "Uzur storyni uplaod qila olmaymas ekanmanda")
-                    .await?;
+                let req = bot.send_message(msg.chat.id, "...").await?;
+
+                with_chat_action(
+                    bot,
+                    msg.chat.id,
+                    ChatAction::Typing,
+                    stream_text(
+                        bot,
+                        msg.chat.id,
+                        req.id,
+                        "Upload qila olmadim 😅".to_string(),
+                    ),
+                )
+                .await?;
 
                 return Ok(());
             };
 
             let Some(media) = session.story.media.as_ref() else {
-                bot.send_message(msg.chat.id, "malumotlarini topolmadim")
-                    .await?;
+                let req = bot.send_message(msg.chat.id, "...").await?;
+
+                with_chat_action(
+                    bot,
+                    msg.chat.id,
+                    ChatAction::Typing,
+                    stream_text(
+                        bot,
+                        msg.chat.id,
+                        req.id,
+                        "Saqlab qo'ymagan ekanman 😅".to_string(),
+                    ),
+                )
+                .await?;
 
                 return Ok(());
             };
@@ -181,20 +295,34 @@ pub async fn handle_waiting_story_confirm(
 
             let active_period = session.story.active_period();
 
-            post_story_multipart(
+            with_chat_action(
                 bot,
-                business_connection_id,
-                &prepared,
-                active_period,
-                session.story.caption.as_deref(),
+                msg.chat.id,
+                ChatAction::UploadVideo,
+                post_story_multipart(
+                    bot,
+                    business_connection_id,
+                    &prepared,
+                    active_period,
+                    session.story.caption.as_deref(),
+                ),
             )
             .await?;
 
             session.reset_story();
 
-            bot.send_message(
+            let req = bot.send_message(msg.chat.id, "...").await?;
+
+            with_chat_action(
+                bot,
                 msg.chat.id,
-                "Storyni profilingizga yuklab qo'ydim ko'rishingiz mumkin.",
+                ChatAction::Typing,
+                stream_text(
+                    bot,
+                    msg.chat.id,
+                    req.id,
+                    "Upload qilib qo'ydim.".to_string(),
+                ),
             )
             .await?;
         }
