@@ -1,5 +1,6 @@
 use crate::services::action::with_chat_action;
-use crate::services::story::{post_story_multipart, prepare_story_content};
+use crate::services::story::{post_story_multipart};
+use crate::services::story::{prepare_story_content};
 use crate::states::{session::Session, state::State, story::StoryMedia};
 use crate::utils::message::stream_text;
 use teloxide::dispatching::dialogue::GetChatId;
@@ -291,7 +292,7 @@ pub async fn handle_waiting_story_confirm(
                 return Ok(());
             };
 
-            let prepared = prepare_story_content(bot, media).await?;
+            let prepared = prepare_story_content(&bot, &media).await?;
 
             let active_period = session.story.active_period();
 

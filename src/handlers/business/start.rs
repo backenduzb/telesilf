@@ -9,6 +9,7 @@ use std::sync::Arc;
 use teloxide::prelude::*;
 use teloxide::types::{MessageKind, UserId};
 use teloxide::RequestError;
+use crate::handlers::business::info::info_getter;
 
 pub async fn business_start(
     bot: Bot,
@@ -59,7 +60,7 @@ pub async fn business_start(
                         msg.chat.id,
                         sent.id,
                         format!(
-                            "Assalomu alaykum {}! Hozir men javob berib turibman, marhamat nima kerak bo'lsa so'rashingiz mumkin.",
+                            "Assalomu alaykum {}! Hozir men javob berib turibman, marhamat nima kerak bo'lsa so'rashingiz mumkin. \n\nMisol Silf portfolioni ko'rsat",
                             name
                         ),
                         Some(biz_id.0.as_str()),
@@ -68,6 +69,8 @@ pub async fn business_start(
                 }
             }
         }
+    } else {
+   		info_getter(bot, msg, app);
     }
 
     Ok(())
