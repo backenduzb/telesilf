@@ -27,40 +27,44 @@ pub async fn business_start(
                         return Ok(());
                     }
                 }
-
+    
+                info_getter(&bot, &msg).await?;
+    
                 let msg_date_utc = msg.date;
-                let msg_date_local = Utc.timestamp_opt(msg_date_utc.timestamp(), 0)
+                let msg_date_local = Utc
+                    .timestamp_opt(msg_date_utc.timestamp(), 0)
                     .single()
                     .map(|dt| dt.with_timezone(&Local))
-                    .unwrap_or_else(|| Local::now());
-
+                    .unwrap_or_else(Local::now);
+    
                 let today = Local::now().date_naive();
                 let is_today = msg_date_local.date_naive() == today;
-
-                let is_first_message_today = is_today && !app.has_replied_today(msg.chat.id, today).await;
-
+    
+                let is_first_message_today =
+                    is_today && !app.has_replied_today(msg.chat.id, today).await;
+    
                 remember_business_message_from_message(&msg, &app);
-
+    
                 if is_first_message_today && is_greeting_or_appeal(text) {
                     app.mark_as_replied_today(msg.chat.id, today).await;
-
+    
                     let name = msg
                         .from
                         .as_ref()
                         .map(|u| u.first_name.as_str())
                         .unwrap_or("do'stim");
-
+    
                     let mut req = bot.send_message(msg.chat.id, "...");
                     req = req.business_connection_id(biz_id.clone());
-
+    
                     let sent = req.await?;
-
+    
                     stream_bs_text(
                         &bot,
                         msg.chat.id,
                         sent.id,
                         format!(
-                            "Assalomu alaykum {}! Hozir men javob berib turibman, marhamat nima kerak bo'lsa so'rashingiz mumkin. \n\nMisol Silf portfolioni ko'rsat",
+                            "Assalomu alaykum {}! Hozir men javob berib turibman, marhamat nima kerak bo'lsa so'rashingiz mumkin.\n\nMisol: Silf portfolioni ko'rsat",
                             name
                         ),
                         Some(biz_id.0.as_str()),
@@ -69,8 +73,6 @@ pub async fn business_start(
                 }
             }
         }
-    } else {
-   		info_getter(bot, msg);
     }
 
     Ok(())
