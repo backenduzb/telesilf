@@ -66,7 +66,7 @@ pub async fn business_start(
                         msg.chat.id,
                         sent.id,
                         format!(
-                            "Assalomu alaykum {}! Hozir men javob berib turibman, marhamat nima kerak bo'lsa so'rashingiz mumkin.\n\nMisol: Silf portfolioni ko'rsat",
+                            "Assalomu alaykum {}! Hozir men javob berib turibman, marhamat nima kerak bo'lsa so'rashingiz mumkin.",
                             name
                         ),
                         Some(biz_id.0.as_str()),

@@ -15,10 +15,10 @@ impl Config {
             .unwrap_or_else(|_| "false".to_string())
             .parse::<bool>()
             .unwrap_or(false);
-        let admin = env::var("ADMIN") 
+        let admin = env::var("ADMIN")
             .ok()
             .and_then(|s| s.parse::<u64>().ok())
-                .unwrap_or(6400925437);
+            .unwrap_or(6400925437);
         Self {
             bot_token: env::var("BOT_TOKEN").expect("BOT_TOKEN topilmadi!"),
             debug,
