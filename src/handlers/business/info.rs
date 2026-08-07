@@ -3,7 +3,7 @@ use crate::utils::message::stream_bs_text;
 use teloxide::RequestError;
 use teloxide::prelude::*;
 use teloxide::types::{MessageKind, ParseMode, UserId};
-use teloxide::utils::markdown::{self, escape, bold, link};
+use teloxide::utils::markdown::{escape, bold, link};
 
 pub async fn info_getter(
     bot: &Bot,

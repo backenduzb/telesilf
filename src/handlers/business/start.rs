@@ -2,6 +2,7 @@ use crate::app::AppState;
 use crate::handlers::business::connection::{
     remember_business_message_from_message, save_business_connection_from_message,
 };
+use crate::config::settings::Config;
 use crate::utils::message::stream_bs_text;
 use crate::utils::greeting::is_greeting_or_appeal; 
 use chrono::{ Local, TimeZone, Utc};
@@ -16,13 +17,14 @@ pub async fn business_start(
     msg: Message,
     app: Arc<AppState>,
 ) -> Result<(), RequestError> {
+	let config = Config::from_env();
     save_business_connection_from_message(&bot, &msg, &app).await?;
 
     if let MessageKind::Common(ref common) = msg.kind {
         if let Some(biz_id) = &common.business_connection_id {
             if let Some(text) = msg.text() {
                 if let Some(user) = &msg.from {
-                    if user.id == UserId(6400925437) {
+                    if user.id == UserId(config.admin) {
                         remember_business_message_from_message(&msg, &app);
                         return Ok(());
                     }

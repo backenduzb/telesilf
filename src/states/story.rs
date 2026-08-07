@@ -19,9 +19,9 @@ impl StoryDraft {
         self.caption = None;
     }
 
-    pub fn is_ready(&self) -> bool {
-        self.media.is_some()
-    }
+    // pub fn is_ready(&self) -> bool {
+    //     self.media.is_some()
+    // }
 
     pub fn active_period(&self) -> Seconds {
         Seconds::from_seconds(24 * 60 * 60)

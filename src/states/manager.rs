@@ -26,9 +26,9 @@ impl StateManager {
         self.sessions.insert(session.user_id, session);
     }
 
-    pub fn remove(&self, user: UserId) {
-        self.sessions.remove(&user);
-    }
+    // pub fn remove(&self, user: UserId) {
+    //     self.sessions.remove(&user);
+    // }
 
     pub fn remember_business_message(&self, snapshot: BusinessMessageSnapshot) {
         self.business_messages
