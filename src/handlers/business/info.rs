@@ -1,16 +1,12 @@
 use crate::utils::greeting::is_portfolio_request;
 use crate::utils::message::stream_bs_text;
 use teloxide::RequestError;
-use teloxide::dispatching::dialogue::GetChatId;
 use teloxide::prelude::*;
 use teloxide::types::{MessageKind, ParseMode, UserId};
-use std::sync::Arc;
-use crate::app::AppState;
 
 pub async fn info_getter(
     bot: Bot,
     msg: Message,
-    app: Arc<AppState>,
 ) -> Result<(), RequestError> {
     if let MessageKind::Common(ref common) = msg.kind {
         if let Some(biz_id) = &common.business_connection_id {

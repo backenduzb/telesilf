@@ -70,7 +70,7 @@ pub async fn business_start(
             }
         }
     } else {
-   		info_getter(bot, msg, app);
+   		info_getter(bot, msg);
     }
 
     Ok(())

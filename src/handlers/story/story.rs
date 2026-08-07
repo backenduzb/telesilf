@@ -1,9 +1,8 @@
 use crate::services::action::with_chat_action;
-use crate::services::story::{post_story_multipart};
-use crate::services::story::{prepare_story_content};
+use crate::services::story::post_story_multipart;
+use crate::services::story::prepare_story_content;
 use crate::states::{session::Session, state::State, story::StoryMedia};
 use crate::utils::message::stream_text;
-use teloxide::dispatching::dialogue::GetChatId;
 use teloxide::prelude::*;
 use teloxide::types::ChatAction;
 
