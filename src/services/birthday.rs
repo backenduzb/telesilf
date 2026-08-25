@@ -349,10 +349,13 @@ fn apply_brightness(window: &str, brightness: Brightness) -> String {
     }
 }
 
-/// `★ ★ ★ ★ ...` naqshini berilgan kenglikka moslab qaytaradi.
+/// `★   ★   ★   ...` naqshini berilgan kenglikka moslab qaytaradi.
+///
+/// Yulduzlar kamroq bo'lishi uchun har 4 ustunda bittadan: 32 kenglikda 8 ta yulduz.
 fn star_row(star: char, width: usize) -> String {
-    let pattern = format!("{star} ");
-    pattern.repeat(width).chars().take(width).collect()
+    let pattern = format!("{star}   ");
+    let pattern_len = pattern.chars().count();
+    pattern.repeat(width / pattern_len + 1).chars().take(width).collect()
 }
 
 /// Monospace ko'rinishi uchun HTML `<code>` bloki.
@@ -422,5 +425,45 @@ fn glyph(ch: char) -> &'static [&'static str; 5] {
         '.' => &["     ", "     ", "     ", "     ", "  #  "],
         ',' => &["     ", "     ", "     ", "  #  ", " #   "],
         _ => &[" ### ", "#   #", "  #  ", "     ", "  #  "],
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Yulduz qatorlari shu qancha kenglikda, shu qancha yulduzdan iborat bo'lishi
+    /// kerak — har 4 ustunda bittadan (kamroq yulduz).
+    #[test]
+    fn star_rows_are_sparser() {
+        for star in ['★', '☆', '✦', '✧'] {
+            let row = star_row(star, VIEWPORT);
+            assert_eq!(row.chars().count(), VIEWPORT);
+            assert_eq!(row.matches(star).count(), VIEWPORT / 4);
+        }
+    }
+
+    /// `/birthday_for CLAY` uchun kadrning ko'rinishi (`cargo test -- --nocapture`).
+    #[test]
+    fn frame_preview() {
+        let banner = ascii_banner("HAPPY BIRTHDAY CLAY!");
+        let padded: Vec<String> = banner
+            .iter()
+            .map(|r| format!("{}{}{}", " ".repeat(VIEWPORT), r, " ".repeat(VIEWPORT)))
+            .collect();
+        let center = (padded[0].chars().count() - VIEWPORT) / 2;
+
+        let frame = render_frame(
+            &padded,
+            Frame {
+                pos: center,
+                style: 0,
+                star: '★',
+                star_bottom: '☆',
+                corners: false,
+                brightness: Brightness::Normal,
+            },
+        );
+        println!("{frame}");
     }
 }
