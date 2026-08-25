@@ -50,9 +50,10 @@ You already can start chat width `/start`.
 
 Botni guruhga qo'shib, `/birthday_for Ism` buyrug'ini yozing — bot o'sha ism
 uchun katta ASCII harflardan yasalgan, HTML `marquee` kabi harakatlanuvchi
-bezakli tabrikni yuborib, uni yangilab turadi. To'xtatish uchun
-`/stopbirthday` yozing (yoki boshqa `/birthday_for` — u avvalgisini
-almashtiradi).
+bezakli tabrikni yuboradi. Tabrik har 400 ms da yangilanadi: silliq
+tezlashuv, ramka uslublari almashinuvi, harflar ustidan o'tuvchi yorug'lik
+to'lqini va uchqun/puls effektlari bilan. To'xtatish uchun `/stopbirthday`
+yozing (yoki boshqa `/birthday_for` — u avvalgisini almashtiradi).
 
 | Buyruq | Tavsif |
 |--------|--------|
