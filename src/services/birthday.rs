@@ -23,7 +23,7 @@ static BIRTHDAY_SEQ: AtomicU64 = AtomicU64::new(1);
 const VIEWPORT: usize = 28;
 
 /// Ikki kadr orasidagi pauza (millisekundlarda).
-const STEP_MS: u64 = 80;
+const STEP_MS: u64 = 100;
 
 /// Chatda yangi tug'ilgan kun tabrigini boshlaydi.
 ///
