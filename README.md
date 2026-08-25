@@ -46,6 +46,20 @@ Two variants are supported:
 
 You already can start chat width `/start`.
 
+### Tug'ilgan kun tabrigi 🎂
+
+Botni guruhga qo'shib, `/birthday_for Ism` buyrug'ini yozing — bot o'sha ism
+uchun katta ASCII harflardan yasalgan, HTML `marquee` kabi harakatlanuvchi
+bezakli tabrikni yuboradi. Tabrik har 400 ms da yangilanadi: silliq
+tezlashuv, ramka uslublari almashinuvi, harflar ustidan o'tuvchi yorug'lik
+to'lqini va uchqun/puls effektlari bilan. To'xtatish uchun `/stopbirthday`
+yozing (yoki boshqa `/birthday_for` — u avvalgisini almashtiradi).
+
+| Buyruq | Tavsif |
+|--------|--------|
+| `/birthday_for Ism` | ASCII-marquee tabrikni boshlaydi (alias: `/birdthday_for`) |
+| `/stopbirthday` | Faol tabrikni to'xtatadi (alias: `/stopbirdthday`) |
+
 ### Integrations
 | Categories | Skill | Description |
 |--------|----------|-------------|
