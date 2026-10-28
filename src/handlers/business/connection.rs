@@ -88,11 +88,10 @@ pub async fn save_business_connection_from_message(
         return Ok(());
     };
 
-    if let Some(session) = app.state_manager.get(user.id) {
-        if session.business_connection_id.as_ref() == Some(connection_id) {
+    if let Some(session) = app.state_manager.get(user.id)
+        && session.business_connection_id.as_ref() == Some(connection_id) {
             return Ok(());
         }
-    }
 
     fetch_and_save_business_connection(bot, connection_id.clone(), app).await
 }

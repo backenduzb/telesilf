@@ -25,11 +25,10 @@ pub struct PreparedStoryContent {
 
 impl Drop for PreparedStoryContent {
     fn drop(&mut self) {
-        if let Err(error) = std::fs::remove_file(&self.path) {
-            if error.kind() != std::io::ErrorKind::NotFound {
+        if let Err(error) = std::fs::remove_file(&self.path)
+            && error.kind() != std::io::ErrorKind::NotFound {
                 log::warn!("story temp faylini o'chirib bo'lmadi: {}", error);
             }
-        }
     }
 }
 

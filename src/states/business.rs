@@ -27,10 +27,6 @@ impl BusinessMessageSnapshot {
     }
 }
 
-pub fn business_connection_key(id: &BusinessConnectionId) -> String {
-    id.0.clone()
-}
-
 pub fn business_message_key(connection_id: &BusinessConnectionId, message_id: MessageId) -> String {
-    format!("{}:{}", business_connection_key(connection_id), message_id)
+    format!("{}:{}", connection_id.0, message_id)
 }

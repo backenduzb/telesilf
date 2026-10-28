@@ -291,7 +291,7 @@ pub async fn handle_waiting_story_confirm(
                 return Ok(());
             };
 
-            let prepared = prepare_story_content(&bot, &media).await?;
+            let prepared = prepare_story_content(bot, media).await?;
 
             let active_period = session.story.active_period();
 

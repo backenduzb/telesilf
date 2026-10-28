@@ -16,11 +16,11 @@ use utils::run::{run_polling, run_webhook};
 async fn main() {
     dotenv().ok();
     pretty_env_logger::init();
-    let app = Arc::new(app::AppState::new());
+
     log::info!("Silf boti tayyorlanmoqda...");
 
     let config = Config::from_env();
-
+    let app = Arc::new(app::AppState::new(config.admin));
     let bot = Bot::new(&config.bot_token);
 
     if config.debug {

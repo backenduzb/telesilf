@@ -5,7 +5,7 @@ pub fn is_greeting_or_appeal(text: &str) -> bool {
     static PATTERNS: OnceLock<RegexSet> = OnceLock::new();
 
     let set = PATTERNS.get_or_init(|| {
-        RegexSet::new(&[
+        RegexSet::new([
             r"(?i)\b(salom|assalom|assaalom|assalomu\s*alaykum|assalomu\s*alaikum)\b",
             r"(?i)\b(салом|ассалом|ассалому\s*алайкум|ассалому\s*алайкум)\b",
             r"(?i)\b(qandaysiz|yaxshimisiz|ishlar\s*qanday|kallamysiz|qale|qalesiz)\b",
@@ -31,7 +31,7 @@ pub fn is_portfolio_request(text: &str) -> bool {
     static PATTERNS: OnceLock<RegexSet> = OnceLock::new();
 
     let set = PATTERNS.get_or_init(|| {
-        RegexSet::new(&[
+        RegexSet::new([
             r"(?i)\bportfolio\b",
             r"(?i)\bportfoliongiz\b",
             r"(?i)\bportfolioingiz\b",
@@ -66,7 +66,6 @@ pub fn is_portfolio_request(text: &str) -> bool {
             r"(?i)\bреференсы\b",
             r"(?i)\bпримеры?\s*проектов\b",
 
-            r"(?i)\bportfolio\b",
             r"(?i)\bshow\s*(me\s*)?(your\s*)?portfolio\b",
             r"(?i)\bsend\s*(me\s*)?(your\s*)?portfolio\b",
             r"(?i)\bcan\s*i\s*see\s*(your\s*)?portfolio\b",

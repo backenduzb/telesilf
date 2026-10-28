@@ -4,7 +4,7 @@ use teloxide::types::{BusinessConnectionId, ChatId, MessageId, UserId};
 use super::business::{BusinessMessageSnapshot, business_message_key};
 use super::session::Session;
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct StateManager {
     sessions: DashMap<UserId, Session>,
     business_messages: DashMap<String, BusinessMessageSnapshot>,
@@ -25,10 +25,6 @@ impl StateManager {
     pub fn update(&self, session: Session) {
         self.sessions.insert(session.user_id, session);
     }
-
-    // pub fn remove(&self, user: UserId) {
-    //     self.sessions.remove(&user);
-    // }
 
     pub fn remember_business_message(&self, snapshot: BusinessMessageSnapshot) {
         self.business_messages

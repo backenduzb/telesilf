@@ -17,7 +17,7 @@ pub async fn with_chat_action<F, T>(
 
 	let handle = tokio::spawn(async move {
 		while !token.is_cancelled() {
-			let _ = bot2.send_chat_action(chat_id, action.clone()).await;
+			let _ = bot2.send_chat_action(chat_id, action).await;
 			tokio::time::sleep(Duration::from_secs(4)).await;
 		}
 	});

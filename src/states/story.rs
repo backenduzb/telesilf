@@ -1,5 +1,4 @@
-use teloxide::types::FileId;
-use teloxide::types::Seconds;
+use teloxide::types::{FileId, Seconds};
 
 #[derive(Debug, Clone)]
 pub enum StoryMedia {
@@ -18,10 +17,6 @@ impl StoryDraft {
         self.media = None;
         self.caption = None;
     }
-
-    // pub fn is_ready(&self) -> bool {
-    //     self.media.is_some()
-    // }
 
     pub fn active_period(&self) -> Seconds {
         Seconds::from_seconds(24 * 60 * 60)
